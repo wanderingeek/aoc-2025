@@ -35,7 +35,7 @@ with open(INPUT_FILE) as file_handle:
         instructions.append(line.strip())
 
 file_handle.close()
-print(instructions)
+# print(instructions)
 print("-- DONE STORING INSTRUCTIONS --")
 
 
@@ -55,15 +55,17 @@ for instruction in instructions:
     else:
         CURRENT_POSITION += steps
 
-    # Handle special case of position<0 or >100
-    if CURRENT_POSITION < 0:
-        # If -2, then real position is 98
-        CURRENT_POSITION = 100 + CURRENT_POSITION
-    elif CURRENT_POSITION > 99:
-        # If 102, then real position is 2
-        CURRENT_POSITION = CURRENT_POSITION - 100
+    print("PROVISIONAL position is", CURRENT_POSITION)
 
-    print("Position changed to", CURRENT_POSITION)
+    # Handle special case of position<0 or >100
+    # While loop for handling cases where position has values like -550 or +600
+    if (CURRENT_POSITION < 0) or (CURRENT_POSITION > 99):
+        # If -2, then real position is 98
+        # # If 102, then real position is 2
+        CURRENT_POSITION = CURRENT_POSITION % 100
+        print("CORRECTED position to", CURRENT_POSITION)
+
+    print("Final CORRECTED Position changed is", CURRENT_POSITION)
 
     if CURRENT_POSITION == 0:
         ZERO_COUNTER += 1

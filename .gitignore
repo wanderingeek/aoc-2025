@@ -209,3 +209,4 @@ __marimo__/
 # Folder that contains input files for AOC 2025. 
 # Files are huge in size and therefore should not be checked in to version control.
 actual_inputs/
+op.txt
