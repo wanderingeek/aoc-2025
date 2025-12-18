@@ -1,7 +1,10 @@
 import re
 
-INPUT_FILE = "./day2/test_input.txt"
-# INPUT_FILE = "./actual_inputs/d2_input.txt"
+# INPUT_FILE = "./day2/test_input.txt"
+INPUT_FILE = "./actual_inputs/d2_input.txt"
+
+PART1_REGEX_PATTERN = r"(\d+)\1"
+PART2_REGEX_PATTERN = r"(\d+)\1+"
 
 
 # Function that returns the start and end ids of the id range
@@ -11,37 +14,30 @@ def get_start_end_range(id_range: str) -> tuple[int, int]:
     return range_start, range_end
 
 
-# Function to check for invalid numbers for the part 2 solution
-def check_part2_invalid(id: int) -> bool:
+# Function to check for invalid numbers for the parts 1 and 2 solution
+# Switch regex based on bool flag
+def is_id_invalid(id: int, part1: bool = False) -> bool:
     id_str = str(id)
 
     # We use regular expression to check if a pattern occurs twice in the same string
     # Length of original sequence ranges from 1 to len(id)/2
-    for sequence_length in range(1, len(id_str) // 2 + 1):
-        sequence = id_str[:sequence_length]
+    regex_pattern = None
+    if part1:
+        regex_pattern = PART1_REGEX_PATTERN
+    else:
+        regex_pattern = PART2_REGEX_PATTERN
 
-        # \1+ is the key here - Capture group matched one or more times.
-        # And the entire string comprised just of these
-        regex_pattern = r"(\d{" + str(sequence_length) + r"})\1+"
+    regex_match = re.fullmatch(regex_pattern, id_str)
 
-        print("Regex pattern is", regex_pattern)
-
-        # Now we check to see if there is a full match
-        if re.fullmatch(regex_pattern, id_str):
-            print(
-                "Full pattern match CONFIRMED for sequence", sequence, "in id", id_str
-            )
-            return True
-        else:
-            print("Pattern match failed for sequence", sequence, "in id", id_str)
-            continue
+    if regex_match:
+        return True
 
     return False
 
 
 # List of ranges received from the input file
 id_ranges: list[str] = list()
-invalid_ids_sum = 0
+part1_invalid_ids_sum = 0
 part2_invalid_ids_sum = 0
 
 
@@ -65,28 +61,17 @@ for id_range in id_ranges:
 
     for id in range(range_start, range_end + 1):
         id_str = str(id)
-
-        ## For Part 2
-        print("Starting Part 2 check for id", id)
-        if check_part2_invalid(id):
+        # Part 1
+        if is_id_invalid(id, part1=True):
+            print("Part 1 Invalid ID =>", id_str)
+            part1_invalid_ids_sum += id
+        # Part 2
+        if is_id_invalid(id, part1=False):
+            print("Part 2 Invalid ID =>", id_str)
             part2_invalid_ids_sum += id
 
-        # If id length is odd, then ignore and continue, as its valid
-        if len(id_str) % 2 != 0:
-            continue
-
-        # Split the string into two equal parts and compare them to each other
-        # If they are the same then its an invalid ID
-        split_index = int(len(id_str) / 2)
-        first_half = id_str[:split_index]
-        second_half = id_str[split_index:]
-
-        # Use string comparison to check if first half identical to second half
-        if first_half == second_half:
-            print("Part 1 Invalid ID detected =>", id_str)
-            invalid_ids_sum += id
 
 print("--- ---- ---")
-print("Invalid IDs sum is", invalid_ids_sum)
+print("Invalid IDs sum is", part1_invalid_ids_sum)
 print("Part 2 Invalid IDs sum is", part2_invalid_ids_sum)
 print("--- ---- ---")
