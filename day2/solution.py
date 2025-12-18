@@ -3,12 +3,13 @@ import re
 # INPUT_FILE = "./day2/test_input.txt"
 INPUT_FILE = "./actual_inputs/d2_input.txt"
 
+# Check for original capture group being repeated twice or more
 PART1_REGEX_PATTERN = r"(\d+)\1"
 PART2_REGEX_PATTERN = r"(\d+)\1+"
 
 
 # Function that returns the start and end ids of the id range
-def get_start_end_range(id_range: str) -> tuple[int, int]:
+def get_range_start_end(id_range: str) -> tuple[int, int]:
     range_start = int(id_range.split("-")[0])
     range_end = int(id_range.split("-")[1])
     return range_start, range_end
@@ -20,13 +21,13 @@ def is_id_invalid(id: int, part1: bool = False) -> bool:
     id_str = str(id)
 
     # We use regular expression to check if a pattern occurs twice in the same string
-    # Length of original sequence ranges from 1 to len(id)/2
     regex_pattern = None
     if part1:
         regex_pattern = PART1_REGEX_PATTERN
     else:
         regex_pattern = PART2_REGEX_PATTERN
 
+    # Use re.fullmatch to apply regex pattern to entire string
     regex_match = re.fullmatch(regex_pattern, id_str)
 
     if regex_match:
@@ -50,7 +51,7 @@ with open(INPUT_FILE) as file_handle:
 # Now lets go through them and sym up the invalid IDs
 print("--- ---- ---")
 for id_range in id_ranges:
-    range_start, range_end = get_start_end_range(id_range)
+    range_start, range_end = get_range_start_end(id_range)
     # print(f"Range start is {range_start}, Range end is {range_end}")
 
     ## IMPORTANT INFO for Part 1
@@ -72,6 +73,6 @@ for id_range in id_ranges:
 
 
 print("--- ---- ---")
-print("Invalid IDs sum is", part1_invalid_ids_sum)
+print("Part 1 Invalid IDs sum is", part1_invalid_ids_sum)
 print("Part 2 Invalid IDs sum is", part2_invalid_ids_sum)
 print("--- ---- ---")
